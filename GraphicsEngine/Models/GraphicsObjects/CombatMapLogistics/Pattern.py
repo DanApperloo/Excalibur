@@ -1,8 +1,13 @@
+from Utilities.LoggingUtilities.LoggingUtil import *
 import copy as copy
 
 class Pattern(object):
 
-    def __init__(self, dimensions, default):
+    logger = LoggingUtil('Pattern')
+
+    def __init__(self, dimensions, default, name = "DefaultPattern"):
+        self.logger.logDebug("Constructor called for Pattern: {0}".format(name))
+        self.name = name
         self.xDim = dimensions[0]
         self.yDim = dimensions[1]
         self.defaultValue = default
@@ -20,7 +25,7 @@ class Pattern(object):
             layer.append([])
         return layer
 
-    def initialise(self, origin, patternIn, boxType, movable):
+    def initialize(self, origin, patternIn, boxType, movable):
         self.active = True
         self.position = origin
         self.shape = patternIn
@@ -51,6 +56,8 @@ class Pattern(object):
         return self.position
 
     def cleanUp(self):
+        self.logger.logDebug("Cleaning resources for Pattern '{0}'".format(self.name))
+        del self.name
         del self.xDim
         del self.yDim
         del self.defaultValue

@@ -6,7 +6,7 @@ class CombatMapController(object):
     def createCombatMap(cls, params):
         if CombatMapModel.canCreate() is True:
             combatMap = CombatMapModel(params[0], params[1], params[2])
-            combatMap.initialise()
+            combatMap.initialize()
             combatMap.generateMap('MapINPUT')
             combatMap.placeCharacters('CHARACTERPANEL')
             combatMap.showMap()

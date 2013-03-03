@@ -1,7 +1,10 @@
+from Utilities.LoggingUtilities.LoggingUtil import *
 import ogre.renderer.OGRE as ogre
 
 class SquareProjector(object):
     """Defines the map block selector square projector."""
+
+    logger = LoggingUtil('SquareProjector')
 
     # Class Variables--------------------------------------------------------------------------------------------------#
     NO_TYPE=0
@@ -19,7 +22,7 @@ class SquareProjector(object):
     # -----------------------------------------------------------------------------------------------------------------#
 
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex):
+    def __init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex, name = "DefaultSquareProjector"):
         """Creates the projector object.
 
         Required Parameters:
@@ -28,6 +31,8 @@ class SquareProjector(object):
         rowIndex -
         columnIndex -
         """
+        self.logger.logDebug("Constructor called for SquareProjector: {0}".format(name))
+        self.baseName = name
         self.sceneManager = sceneManagerIn
         self.root = rootNode
         self.row = rowIndex
@@ -44,7 +49,7 @@ class SquareProjector(object):
         self.projectionType = None
 
     # Initialises the projector to its starting position and projection------------------------------------------------#
-    def initialise(self, xpos, ypos, namePrefix=''):
+    def initialize(self, xpos, ypos, namePrefix=''):
         """Initialises the projector. Sets position and images.
 
         Required Parameters:
@@ -198,6 +203,8 @@ class SquareProjector(object):
 
     # Releases any used resources--------------------------------------------------------------------------------------#
     def cleanUp(self):
+        self.logger.logDebug("Releasing resources for SquareProjector '{0}'".format(self.baseName))
+        del self.baseName
         self.projectionNode.detachAllObjects()
         self.filterNode.detachAllObjects()
         del self.projectionFrustum

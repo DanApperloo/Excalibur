@@ -11,7 +11,7 @@ class BackgroundSubView(BasicSceneSubView):
         self.GUISheet = guiSheet
 
     # Initialises the mode by loading images---------------------------------------------------------------------------#
-    def initialise(self):
+    def initialize(self):
         BackgroundController.createBackground((self.modeName, self.GUISheet))
 
     # Cleans up any resources used by the mode-------------------------------------------------------------------------#

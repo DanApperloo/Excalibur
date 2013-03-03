@@ -1,8 +1,11 @@
+from Utilities.LoggingUtilities.LoggingUtil import *
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.SquareProjector import SquareProjector
 from GraphicsEngine.Models.GraphicsObjects.Drawables.SpriteDrawable import SpriteDrawable
 
 class SelectionProjector(SquareProjector):
     """Controls the move-able pointer."""
+
+    logger = LoggingUtil('SelectionProjector')
 
     # -----------------------------------------------------------------------------------------------------------------#
     SELECTOR_IMAGE = "Selection_Box.png"
@@ -10,13 +13,15 @@ class SelectionProjector(SquareProjector):
     # -----------------------------------------------------------------------------------------------------------------#
 
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex):
+    def __init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex, name = "DefaultSelectionProjector"):
+        self.logger.logDebug("Constructor called for SelectionProjector: {0}".format(name))
+        self.name = name
         SquareProjector.__init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex)
         self.pointer = None
 
     # Initialises the selector at a given position and turns its visibility to false-----------------------------------#
-    def initialise(self, xpos, ypos, namePrefix, mapBlock):
-        SquareProjector.initialise(self, xpos, ypos, namePrefix)
+    def initialize(self, xpos, ypos, namePrefix, mapBlock):
+        SquareProjector.initialize(self, xpos, ypos, namePrefix)
         self.projectionType = self.SELECTOR_TYPE
         self.projectionImage = self.SELECTOR_IMAGE
         self.tieToMapBlock(mapBlock)
@@ -59,6 +64,8 @@ class SelectionProjector(SquareProjector):
 
     # Releases any used resources by the projector---------------------------------------------------------------------#
     def cleanUp(self):
+        self.logger.logDebug("Releasing resources for SelectionProjector '{0}'".format(self.name))
+        del self.name
         self.pointer.cleanUp()
         del self.pointer
         SquareProjector.cleanUp(self)

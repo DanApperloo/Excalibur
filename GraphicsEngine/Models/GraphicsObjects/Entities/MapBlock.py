@@ -1,11 +1,14 @@
 import ogre.renderer.OGRE as ogre
+from Utilities.LoggingUtilities.LoggingUtil import *
 from GraphicsEngine.Models.GraphicsObjects.Drawables.EntityDrawable import EntityDrawable
 
 class MapBlock(EntityDrawable):
     """MapBlock is used to store information for the Combat CombatMapModel tiles and draw them"""
 
+    logger = LoggingUtil('MapBlock')
+
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManager, parentNode, meshFile, xpos, ypos, zpos = 0):
+    def __init__(self, sceneManager, parentNode, meshFile, xpos, ypos, zpos = 0, name = "DefaultMapBlock"):
         """Creates an individual map block.
 
         Required Parameters:
@@ -16,6 +19,8 @@ class MapBlock(EntityDrawable):
         ypos - the designed block layout Y position
         zpos - the designed block layout Z position (default = 0)
         """
+        self.logger.logDebug("Constructor called for MapBlock: {0}".format(name))
+        self.name = name
         # BlockImageSet
         EntityDrawable.__init__(self, sceneManager, parentNode)
         self.mesh = meshFile
@@ -25,9 +30,9 @@ class MapBlock(EntityDrawable):
         self.workingMaterials = None
 
     # Initialises the map block----------------------------------------------------------------------------------------#
-    def initialise(self):
+    def initialize(self):
         """Sets up the map block. Clones the used material so that it may be edited."""
-        EntityDrawable.initialise(self, "{0!s}:{1!s} MapBlock".format(self.staticPosition[0], self.staticPosition[1]), self.mesh)
+        EntityDrawable.initialize(self, "{0!s}:{1!s} MapBlock".format(self.staticPosition[0], self.staticPosition[1]), self.mesh)
         self.setPosition((self.staticPosition[0], 0, self.staticPosition[1]))
         # Clones all materials to allow projections to appear
         self.workingMaterials = []
@@ -53,6 +58,8 @@ class MapBlock(EntityDrawable):
 
     # Frees any used resources-----------------------------------------------------------------------------------------#
     def cleanUp(self):
+        self.logger.logDebug("Releasing resources for MapBlock '{0}'".format(self.name))
+        del self.name
         for material in self.workingMaterials:
             # Remove the material from the manager so that it may be deleted
             ogre.MaterialManager.getSingleton().remove(material)

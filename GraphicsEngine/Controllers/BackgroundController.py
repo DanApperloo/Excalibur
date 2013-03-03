@@ -6,7 +6,7 @@ class BackgroundController(object):
     def createBackground(cls, params):
         if FlatImagesModel.canCreate() is True:
             background  = FlatImagesModel(params[0], params[1], True)
-            background.initialise()
+            background.initialize()
         else:
             raise Exception('BackgroundController cannot create the FlatImagesModel because a SceneContainer still exists.')
 

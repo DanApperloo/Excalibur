@@ -124,7 +124,7 @@ class GraphicsEngineMain(object):
     # Loads the entry Mode---------------------------------------------------------------------------------------------#
     def loadGameMode(self, modeIndex):
         self.currentMode = modeIndex
-        self.gameModeList[Constant.INDEX_MODE_LIST[self.currentMode]].initialise()  # Initialise the Game Mode
+        self.gameModeList[Constant.INDEX_MODE_LIST[self.currentMode]].initialize()  # Initialise the Game Mode
 
     # Private Helper Function --- Loads the GUI schemes----------------------------------------------------------------#
     def __loadAllGUISchemes(self):

@@ -9,7 +9,7 @@ class BasicSceneSubView (object):
         self.modeName = mode
 
     # Initialises the scene mode. Meant to be over-ridden--------------------------------------------------------------#
-    def initialise(self):
+    def initialize(self):
         pass
 
     # Cleans up all resources used by Basic Scene Mode-----------------------------------------------------------------#

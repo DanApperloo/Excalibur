@@ -13,9 +13,9 @@ class View ( object ):
         self.nextModes = nextModes
 
     # Sets up the game mode with it's child modes----------------------------------------------------------------------#
-    def initialise(self):
-        self.scene.initialise()
-        self.gui.initialise()
+    def initialize(self):
+        self.scene.initialize()
+        self.gui.initialize()
         self.gui.registerHandlers()
         ScreenFlowController.createScreenFlow(self.nextModes)
 

@@ -10,7 +10,7 @@ class CombatMapSubView(BasicSceneSubView):
         self.layout = inputLayout
         self.meshs = meshsIn
 
-    def initialise(self):
+    def initialize(self):
         CombatMapController.createCombatMap((self.sceneManager, self.layout, self.meshs))
 
     def cleanUp(self):

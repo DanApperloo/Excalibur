@@ -20,7 +20,7 @@ class BasicGUISubView(object):
         self.elementTraversalList = list()
 
     # Initialises the mode---------------------------------------------------------------------------------------------#
-    def initialise(self):
+    def initialize(self):
         self.windowManager = CEGUI.WindowManager.getSingleton()
         self.ui = self.windowManager.loadWindowLayout(self.layout, self.modeName + '/')
         GraphicsUtility.effectRecursiveChildWindow(self, self.ui, self.addToTraversalMethod())

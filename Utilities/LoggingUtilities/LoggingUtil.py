@@ -1,5 +1,6 @@
 #Import Basic Python Logging Libraries
 import logging
+import Storage.Constants as Constant
 import os
 import datetime
 import inspect
@@ -19,7 +20,7 @@ class LoggingUtil(object):
 
     #
     # Constructor
-    # @param className the Name of the class that is initailizing its logger
+    # @param className the Name of the class that is initializing its logger
     #
     def __init__(self, classNameIn):
         if not LoggingUtil.active:
@@ -29,6 +30,7 @@ class LoggingUtil(object):
             self.logger = LoggingUtil.loggerMap[classNameIn]
         else:
             self.logger = Logger(classNameIn, LoggingUtil.console, LoggingUtil.fileLog)
+        self.logger.setLevel(Constant.LOGGING_LEVEL)
 
     #
     # Method to set up logging handlers
@@ -53,6 +55,14 @@ class LoggingUtil(object):
     def logWarn(self, message):
         if self.logger and self.loggingEnabled:
             self.logger.warning(message)
+
+    #
+    # Will log a message in the format <TimeLogged> <ClassName> DEBUG <Message>
+    # @param message the message to display
+    #
+    def logDebug(self, message):
+        if self.logger and self.loggingEnabled:
+            self.logger.debug(message)
 
     #
     # Will log a message in the format <TimeLogged> <ClassName> INFO <Message>
@@ -124,6 +134,10 @@ class Logger(object):
             self.loggerName = classNameIn
         self.console = consoleIn
         self.fileLog = fileLogIn
+        self.loggingLevel = 21
+
+    def setLevel(self, lvl):
+        self.loggingLevel = lvl
 
     def getTimeStamp(self):
         return datetime.datetime.today().strftime("%m-%d %H:%M")
@@ -140,13 +154,19 @@ class Logger(object):
 
     def info(self, message):
         messageLevel = "INFO"
+        levelNumber = 25
+        self.logMessage(levelNumber, messageLevel, message)
+
+    def debug(self, message):
+        messageLevel = "DEBUG"
         levelNumber = 20
         self.logMessage(levelNumber, messageLevel, message)
 
     def logMessage(self, levelNumber, level, message):
-        record = logging.LogRecord(self.loggerName, levelNumber, os.path.abspath(__file__), inspect.currentframe().f_back.f_lineno, Logger.messageFormat, {"asctime":self.getTimeStamp(),"name":self.loggerName, "levelname":level, "message":message}, None)
-        self.console.handle(record)
-        self.fileLog.handle(record)
+        if levelNumber >= self.loggingLevel:
+            record = logging.LogRecord(self.loggerName, levelNumber, os.path.abspath(__file__), inspect.currentframe().f_back.f_lineno, Logger.messageFormat, {"asctime":self.getTimeStamp(),"name":self.loggerName, "levelname":level, "message":message}, None)
+            self.console.handle(record)
+            self.fileLog.handle(record)
 
     def shutdown(self):
         self.fileLog = None

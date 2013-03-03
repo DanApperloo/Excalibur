@@ -16,6 +16,12 @@ class TestLogging(AbstractTestClass):
         contents = self.logFile.read()
         self.assertTrue("INFO" in contents)
 
+    #Tests the logDebug Function to make sure it appends a message with DEBUG in it
+    def test_logDebug(self):
+        self.logger.logDebug('debug message')
+        contents = self.logFile.read()
+        self.assertTrue("DEBUG" in contents)
+
     #Tests the logWarn Function to make sure it appends a message with WARNING in it
     def test_logWarn(self):
         self.logger.logWarn('warn message')

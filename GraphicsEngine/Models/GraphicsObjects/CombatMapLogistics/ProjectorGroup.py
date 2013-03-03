@@ -1,3 +1,4 @@
+from Utilities.LoggingUtilities.LoggingUtil import *
 import Storage.Constants as Constant
 from Utilities.GraphicsUtilities.GraphicsUtility import GraphicsUtility
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.Pattern import Pattern
@@ -7,6 +8,8 @@ from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.SelectionProjector
 class ProjectorGroup(object):
     """Stores the entire block square projector array."""
 
+    logger = LoggingUtil('ProjectorGroup')
+
     # Class Variables--------------------------------------------------------------------------------------------------#
     LEFT = [-1,0]
     RIGHT = [1,0]
@@ -15,7 +18,7 @@ class ProjectorGroup(object):
     # -----------------------------------------------------------------------------------------------------------------#
 
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManagerIn, rootNode, mapDimensions):
+    def __init__(self, sceneManagerIn, rootNode, mapDimensions, name = "DefaultProjectorGroup"):
         """Creates the movement square projector class which stores the array of projectors that display the
         movement options.
 
@@ -23,6 +26,8 @@ class ProjectorGroup(object):
         rootNode - the root node of the combat map
         mapDimensions - a 2 dimension tuple or list used consisting of the width and length of the combat map [x, y]
         """
+        self.logger.logDebug("Constructor called for ProjectorGroup: {0}".format(name))
+        self.name = name
         self.root = rootNode
         self.sceneManager = sceneManagerIn
         # Map Dimensions
@@ -41,26 +46,29 @@ class ProjectorGroup(object):
         self.pointerPosition = []
 
     # Initialises the projector array----------------------------------------------------------------------------------#
-    def initialise(self):
+    def initialize(self):
+        self.logger.logDebug("Initializing ProjectorGroup '{0}'".format(self.name))
         for rowIndex in range(self.xDim):
             for columnIndex in range(self.yDim):
                 position = GraphicsUtility.getBlockCenterCoord(rowIndex, columnIndex, self.xDim, self.yDim)
-                self.projectorArray[rowIndex].append(SquareProjector(self.sceneManager, self.root, rowIndex, columnIndex))
-                self.projectorArray[rowIndex][columnIndex].initialise(position['x'], position['y'])
+                self.projectorArray[rowIndex].append(SquareProjector(self.sceneManager, self.root, rowIndex, columnIndex, "{0} - SquareProjector X:{1} Y:{2}".format(self.name, rowIndex, columnIndex)))
+                self.projectorArray[rowIndex][columnIndex].initialize(position['x'], position['y'])
             self.projectorArray.append([])
 
     # Creates a pointer at the specified position----------------------------------------------------------------------#
     def createPointerAtPosition(self, arrayPosition):
+        self.logger.logDebug("Creating Pointer at position X:{0} Y:{1}".format(arrayPosition[0], arrayPosition[1]))
         if self.mapBlocks is not None:
             realPosition = GraphicsUtility.getBlockCenterCoord(arrayPosition[0], arrayPosition[1], self.xDim, self.yDim)
-            self.floatingPointer = SelectionProjector(self.sceneManager, self.root, arrayPosition[0], arrayPosition[1])
-            self.floatingPointer.initialise(realPosition['x'], realPosition['y'], 'Pointer', self.mapBlocks[arrayPosition[0]][arrayPosition[1]])
+            self.floatingPointer = SelectionProjector(self.sceneManager, self.root, arrayPosition[0], arrayPosition[1], "{0} - SelectionProjector X:{1} Y:{2}".format(self.name, arrayPosition[0], arrayPosition[1]))
+            self.floatingPointer.initialize(realPosition['x'], realPosition['y'], 'Pointer', self.mapBlocks[arrayPosition[0]][arrayPosition[1]])
             self.pointerPosition = [arrayPosition[0], arrayPosition[1]]
         else:
             raise Exception('Cannot create movable selector because no Map Blocks are tied to the Square Projector Group.')
 
     # Moves the selector to a different block--------------------------------------------------------------------------#
     def movePointer(self, direction):
+        self.logger.logDebug("Moving Pointer in direction X:{0} Y:{1}".format(direction[0], direction[1]))
         if self.floatingPointer is not None:
             xPos = self.pointerPosition[0] + direction[0]
             yPos = self.pointerPosition[1] + direction[1]
@@ -90,11 +98,13 @@ class ProjectorGroup(object):
 
     # Makes the selector visible---------------------------------------------------------------------------------------#
     def showPointer(self):
+        self.logger.logDebug("Showing Pointer")
         self.floatingPointer.showAll()
 
     # Hides the selector-----------------------------------------------------------------------------------------------#
     def hidePointer(self):
-       self.floatingPointer.hideAll()
+        self.logger.logDebug("Hiding Pointer")
+        self.floatingPointer.hideAll()
 
     # Removes the selector from the map--------------------------------------------------------------------------------#
     def removePointer(self):
@@ -103,6 +113,7 @@ class ProjectorGroup(object):
 
     # Ties the projector array to an equivalently sized Map Block array------------------------------------------------#
     def tieToMapBlocks(self, mapBlocksIn):
+        self.logger.logDebug("Tying MapBlocks to Projectors in ProjectorGroup '{0}'".format(self.name))
         if self.mapBlocks is None:
             self.mapBlocks = mapBlocksIn
             for rowIndex in range(self.xDim):
@@ -113,6 +124,7 @@ class ProjectorGroup(object):
 
     # Unties the projector array from its Map Block array in-case it needs to be switched out----------------------------#
     def untieMapBlocks(self):
+        self.logger.logDebug("Untying MapBlocks to Projectors in ProjectorGroup '{0}'".format(self.name))
         if self.floatingPointer is not None:
             self.mapBlocks = None
             for rowIndex in range(self.xDim):
@@ -126,6 +138,7 @@ class ProjectorGroup(object):
         return self.projectorArray[xpos][ypos]
 
     def refreshPatterns(self):
+        self.logger.logDebug("Refreshing patterns in ProjectorGroup '{0}'".format(self.name))
         for row in range(self.xDim):
             for column in range(self.yDim):
                 self.projectorArray[row][column].hide()
@@ -148,10 +161,11 @@ class ProjectorGroup(object):
                     self.workingTypeArray[row][column] = lowerLayer[row][column]
 
     def addPattern(self, pattern, boxType, origin = None):
+        self.logger.logDebug("Adding pattern to working block array in Projector Group '{0}'".format(self.name))
         if self.patternsTop is None:
             self.patternsTop = 0
             self.patterns.append(Pattern((self.xDim, self.yDim), SquareProjector.NO_TYPE))
-            self.patterns[self.patternsTop].initialise(origin, pattern, boxType, False)
+            self.patterns[self.patternsTop].initialize(origin, pattern, boxType, False)
             self.workingTypeArray = self.patterns[self.patternsTop].getPatternLayer()
         else:
             self.patternsTop = self.patternsTop + 1
@@ -160,11 +174,12 @@ class ProjectorGroup(object):
                 position = origin
             else:
                 position = self.patterns[self.patternsTop - 1].getPosition()
-            self.patterns[self.patternsTop].initialise(position, pattern, boxType, True)
+            self.patterns[self.patternsTop].initialize(position, pattern, boxType, True)
             self.addTopLayerToWorkingArray()
         self.refreshPatterns()
 
     def removePattern(self):
+        self.logger.logDebug("Removing pattern from working block array in Projector Group '{0}'".format(self.name))
         if self.patternsTop is 0:
             self.patterns.pop().cleanUp()
             self.patternsTop = None
@@ -181,6 +196,7 @@ class ProjectorGroup(object):
             raise Exception("No patterns left to remove.")
 
     def movePattern(self, direction):
+        self.logger.logDebug("Attempting to move pattern in direction X:{0} Y:{1}".format(direction[0], direction[1]))
         if self.patterns[self.patternsTop].isMovable():
             pattern = self.patterns[self.patternsTop]
             patternShape = pattern.getShape()
@@ -203,6 +219,8 @@ class ProjectorGroup(object):
 
     # Releases any used resources--------------------------------------------------------------------------------------#
     def cleanUp(self):
+        self.logger.logDebug("Releasing resources for ProjectorGroup '{0}'".format(self.name))
+        del self.name
         for rowIndex in range(self.xDim):
             for columnIndex in range(self.yDim):
                 self.projectorArray[rowIndex][columnIndex].cleanUp()

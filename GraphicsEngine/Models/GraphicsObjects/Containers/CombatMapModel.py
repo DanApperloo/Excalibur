@@ -1,5 +1,6 @@
 # Constants defining the size of each tile orientation
 import ogre.renderer.OGRE as ogre
+from Utilities.LoggingUtilities.LoggingUtil import *
 import Storage.Constants as Constant
 from GraphicsEngine.Models.GraphicsObjects.Containers.BaseSceneContainer import BaseSceneContainer
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.ProjectorGroup import ProjectorGroup
@@ -10,8 +11,10 @@ from GraphicsEngine.Models.GraphicsObjects.Drawables.SpriteDrawableGroup import 
 class CombatMapModel(BaseSceneContainer):
     """CombatMap is used to interact with and store information used in the combat map"""
 
+    logger = LoggingUtil('CombatMapModel')
+
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManagerIn, inputLayout, meshsIn):
+    def __init__(self, sceneManagerIn, inputLayout, meshsIn, name = "DefaultCombatMapModel"):
         """Creates a combat map model.
 
         Required Parameters:
@@ -19,6 +22,8 @@ class CombatMapModel(BaseSceneContainer):
         inputLayout - the 3 dimensional array depicting the map layout
         meshsIn - a list of meshes to use in the map
         """
+        self.logger.logDebug("Constructor called for CombatMapModel: {0}".format(name))
+        self.name = name
         BaseSceneContainer.__init__(self, self.__class__)
         self.sceneManager = sceneManagerIn
         # 3 dimensional array depicting block layout of map
@@ -33,30 +38,33 @@ class CombatMapModel(BaseSceneContainer):
         CombatMapModel.setSingleton(self)
 
     # Initialises the combat map---------------------------------------------------------------------------------------#
-    def initialise(self):
+    def initialize(self):
         """Initialises the graphics objects and sets up the combat map."""
+        self.logger.logDebug("Initializing CombatMapModel '{0}'".format(self.name))
         self.cameraPosition = Constant.INITIAL_CAMERA_POSITION
         self.sceneManager.ambientLight = Constant.COMBAT_SCENE_AMBIENT_LIGHT
         self.rotationalNode = self.sceneManager.getRootSceneNode().createChildSceneNode("Rotation Node", (0, 0, 0))
 
     # Generates the base
     def generateMap(self, mapLayout):
+        self.logger.logDebug("Generating Combat Map")
         # Create the selection projectors
-        self.projectors = ProjectorGroup(self.sceneManager, self.rotationalNode, (len(self.layout[0]), len(self.layout)))
-        self.projectors.initialise()
+        self.projectors = ProjectorGroup(self.sceneManager, self.rotationalNode, (len(self.layout[0]), len(self.layout)), "{0} - ProjectorGroup".format(self.name))
+        self.projectors.initialize()
 
         # Create the MapBlock Version of the CombatMapModel
-        self.mapBlocks = MapBlockGroup(self.sceneManager, self.rotationalNode, self.layout, self.meshsUsed, (len(self.layout[0]), len(self.layout)))
-        self.mapBlocks.initialise()
+        self.mapBlocks = MapBlockGroup(self.sceneManager, self.rotationalNode, self.layout, self.meshsUsed, (len(self.layout[0]), len(self.layout)), "{0} - MapBlockGroup".format(self.name))
+        self.mapBlocks.initialize()
 
         # Tie the projectors to the map blocks
         self.projectors.tieToMapBlocks(self.mapBlocks.getBlockArray())
 
     def placeCharacters(self, characterTray):
+        self.logger.logDebug("Placing characters")
         # Set up the sprites
         self.sprites = SpriteDrawableGroup(self.sceneManager, self.rotationalNode, (Constant.MAP_WIDTH, Constant.MAP_HEIGHT))
-        self.sprites.createSprite("TestUnique", "Link", 8, 7)
-        self.sprites.createSprite("TestUnique2", "Mario", 7, 9)
+        self.sprites.createSprite("TestUnique", "dog", 8, 7)
+        self.sprites.createSprite("TestUnique2", "pikachu", 7, 9)
 
     def showPattern(self):
         self.projectors.addPattern(Constant.MOVEMENT, SquareProjector.ATTACK_BOX, (6, 6))
@@ -74,15 +82,19 @@ class CombatMapModel(BaseSceneContainer):
 #        self.projectors.
 
     def showMap(self):
+        self.logger.logDebug("Showing CombatMapModel")
         self.mapBlocks.showAll()
         self.sprites.showAll()
 
     def hideMap(self):
+        self.logger.logDebug("Hiding CombatMapModel")
         self.mapBlocks.hideAll()
         self.sprites.hideAll()
 
     # Frees any used resources of the combat map-----------------------------------------------------------------------#
     def cleanUp(self):
+        self.logger.logDebug("Releasing resources for CombatMapMode {0}".format(self.name))
+        del self.name
         # Free the tile projector
         self.projectors.cleanUp()
         del self.projectors

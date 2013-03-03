@@ -7,7 +7,7 @@ class StaticBackground(object):
         self.attachTo = attachToWindowModeName
         self.background = None
 
-    def initialise(self):
+    def initialize(self):
         # Here we will use a StaticImage as the root, then we can use it to place a background image
         self.background = CEGUI.WindowManager.getSingleton().createWindow("TaharezLook/StaticImage", self.attachTo + "/backgroundWND")
         # Set position and size

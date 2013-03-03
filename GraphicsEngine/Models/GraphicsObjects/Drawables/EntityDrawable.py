@@ -8,7 +8,7 @@ class EntityDrawable(Drawable):
         Drawable.__init__(self,sceneManager, parentNode)
         self.entity = None
 
-    def initialise(self, name, resourceName):
+    def initialize(self, name, resourceName):
         """Create the block and attach it to a Scene Node
 
         Keyword Arguments:

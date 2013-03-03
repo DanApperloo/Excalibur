@@ -10,7 +10,7 @@ class CharacterPlacementSubView(BasicSceneSubView):
         self.layout = inputLayout
         self.meshs = meshsIn
 
-    def initialise(self):
+    def initialize(self):
         CharacterPlacementController.createCharacterPlacement((self.sceneManager, self.layout, self.meshs))
 
     def cleanUp(self):
