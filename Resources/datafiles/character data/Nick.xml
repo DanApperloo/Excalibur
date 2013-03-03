@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<Character name="Nick" xsi:noNamespaceSchemaLocation="Character.xsd">
+    <job>Fighter</job>
+    <lvl>1</lvl>
+    <exp>0</exp>
+    <str>10</str>
+    <mag>8</mag>
+    <def>11</def>
+    <evn>7</evn>
+    <acc>9</acc>
+    <maxhp>30</maxhp>
+    <curhp>30</curhp>
+    <inventory>
+	<armour placement="head">Steel Cap</armour>
+	<armour placement="chest">Steel Breastplate</armour>
+	<weapon placement="right">Bronze Sword</weapon>
+    </inventory>
+</Character>

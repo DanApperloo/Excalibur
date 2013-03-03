@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<xs:schema schemaName="Character.xsd" targetClass="Character">
+    <xs:element name="Character">
+	<xs:complexType>
+	    <xs:sequence>
+	    	<xs:element name="job" type="xs:string"/>
+	    	<xs:element name="lvl" type="xs:integer"/>
+		<xs:element name="exp" type="xs:integer"/>
+		<xs:element name="str" type="xs:integer"/>
+		<xs:element name="mag" type="xs:integer"/>
+		<xs:element name="def" type="xs:integer"/>
+		<xs:element name="evn" type="xs:integer"/>
+		<xs:element name="acc" type="xs:integer"/>
+		<xs:element name="maxhp" type="xs:integer"/>
+		<xs:element name="curhp" type="xs:integer"/>
+		<xs:element name="inventory">
+		    <xs:complexType>
+			<xs:element name="armour" type="xs:string" minOccurs="0" maxOccurs="6>
+			    <xs:complexType>
+				<xs:attribute name="placement" use="required"/>
+				    <xs:simpleType>
+					<xs:restriction base="xs:string>
+					    <xs:enumeration value="head"/>
+					    <xs:enumeration value="bracer"/>
+					    <xs:enumeration value="boots"/>
+					    <xs:enumeration value="chest"/>
+					    <xs:enumeration value="sheild"/>
+					</xs:restriction>
+				    </xs:simpleType>
+				</xs:attribute>
+			    </xs:complexType>
+			</xs:element>
+			<xs:element name="weapon" type="xs:string" minOccurs="0" maxOccurs="2">
+			    <xs:complexType>
+				<xs:attribute name="hand" use="required">
+				    <xs:simpleType>
+				    	<xs:restriction base="xs:string">
+					    <xs:enumeration value="left"/>
+					    <xs:enumeration value="right"/>
+				    	</xs:restriction>
+				    </xs:simpleType>
+				</xs:attribute>
+			    </xs:complexType>
+			</xs:element>>
+		    </xs:complexType>
+		</xs:element>
+	    </xs:sequence>
+	    <xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+    </xs:element>
+</xs:schema>
+		
+	    

@@ -1,0 +1,18 @@
+material FighterRear
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_write off
+            depth_check on
+
+            texture_unit
+            {
+                texture Warrior_1.png
+            }
+        }
+    }
+}

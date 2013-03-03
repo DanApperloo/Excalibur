@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<Imageset Name="CharPortrait" Imagefile="TestCharPortrait.tga" NativeHorzRes="800" NativeVertRes="600" AutoScaled="true">
+    <Image Name="CharPortraitImage" XPos="1" YPos="1" Width="221" Height="216" />
+</Imageset>

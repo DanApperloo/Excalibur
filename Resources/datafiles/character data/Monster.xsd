@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" schemaName="Monster.xsd" targetClass="Monster">
+    <xsd:element name="Monster">
+	<xsd:complexType>
+	    <xsd:sequence>
+		<xsd:element name="job" type="xsd:string"/>
+	    <xsd:element name="type" type="xsd:string"/>
+	    <xsd:element name="lvl" type="xsd:integer"/>
+		<xsd:element name="exp" type="xsd:integer"/>
+		<xsd:element name="str" type="xsd:integer"/>
+		<xsd:element name="mag" type="xsd:integer"/>
+		<xsd:element name="def" type="xsd:integer"/>
+		<xsd:element name="evn" type="xsd:integer"/>
+		<xsd:element name="acc" type="xsd:integer"/>
+		<xsd:element name="maxhp" type="xsd:integer"/>
+		<xsd:element name="curhp" type="xsd:integer"/>
+	    </xsd:sequence>
+	    <xsd:attribute name="name" type="xsd:string" use="required"/>
+	</xsd:complexType>
+    </xsd:element>
+</xsd:schema>

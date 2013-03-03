@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<GUILayout>
+
+    <Window Type="DefaultGUISheet" Name="BaseCombatMenu">
+        <Window Type="TaharezLook/FrameWindow" Name="BaseCombatMenu/ActionSelection">
+            <Window Type="TaharezLook/Button" Name="BaseCombatMenu/ActionSelection/MoveButton-Clickable" >
+                <Property Name="Text" Value="Move" />
+                <Property Name="Clickable" Value="True" />
+                <Property Name="UnifiedPosition" Value="{{0.1,0},{0.08,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.8,0},{0.1,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="BaseCombatMenu/ActionSelection/AttackButton-Clickable" >
+                <Property Name="Text" Value="Attack" />
+                <Property Name="Clickable" Value="True" />
+                <Property Name="UnifiedPosition" Value="{{0.1,0},{0.21,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.8,0},{0.1,0}}" />
+            </Window>                                      .
+            <Window Type="TaharezLook/Button" Name="BaseCombatMenu/ActionSelection/SkillButton-Clickable" >
+                <Property Name="Text" Value="Skill" />
+                <Property Name="Clickable" Value="True" />
+                <Property Name="UnifiedPosition" Value="{{0.1,0},{0.34,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.8,0},{0.1,0}}" />
+            </Window>
+            <Window Type="TaharezLook/Button" Name="BaseCombatMenu/ActionSelection/WaitButton-Clickable" >
+                <Property Name="Text" Value="Wait" />
+                <Property Name="Clickable" Value="True" />
+                <Property Name="UnifiedPosition" Value="{{0.1,0},{0.47,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.8,0},{0.1,0}}" />
+            </Window>
+
+            <Property Name="AlwaysOnTop" Value="True" />
+            <Property Name="FrameEnabled" Value="True" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="Text" Value="Commands" />
+            <Property Name="UnifiedPosition" Value="{{0.78,0},{0.05,0}}" />
+            <Property Name="UnifiedSize" Value="{{0.2,0},{0.6,0}}" />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="RollUpEnabled" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="DragMovingEnabled" Value="False" />
+        </Window>
+
+        <Window Type="TaharezLook/FrameWindow" Name="BaseCombatMenu/CharacterStatistics">
+            <Window Type="TaharezLook/StaticText" Name="BaseCombatMenu/CharacterStatistics/Text" >
+                <Property Name="FrameEnabled" Value="False" />
+                <Property Name="HorzFormatting" Value="WordWrapLeftAligned" />
+                <Property Name="VertFormatting" Value="TopAligned" />
+                <Property Name="UnifiedAreaRect" Value="{{0.05,0},{0.2,0},{0.95,0},{0.7,0}}" />
+                <Property Name="BackgroundEnabled" Value="False" />
+                <Property Name="Text" Value="No information available." />
+            </Window>
+
+            <Property Name="AlwaysOnTop" Value="True" />
+            <Property Name="UnifiedPosition" Value="{{0.1,0},{0.8,0}}" />
+            <Property Name="UnifiedSize" Value="{{0.4,0},{0.18,0}}" />
+            <Property Name="Text" Value="No Character selected." />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="RollUpEnabled" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="DragMovingEnabled" Value="False" />
+        </Window>
+
+        <Window Type="TaharezLook/StaticText" Name="BaseCombatMenu/CombatMenuBlockInformation" >
+            <Property Name="AlwaysOnTop" Value="True" />
+            <Property Name="FrameEnabled" Value="True" />
+            <Property Name="HorzFormatting" Value="WordWrapLeftAligned" />
+            <Property Name="VertFormatting" Value="TopAligned" />
+            <Property Name="UnifiedAreaRect" Value="{{0.8,0},{0.8,0},{0.93,0},{0.95,0}}" />
+            <Property Name="BackgroundEnabled" Value="True" />
+            <Property Name="Text">Block Level:
+Block Type:</Property>
+        </Window>
+
+        <Window Type="TaharezLook/FrameWindow" Name="BaseCombatMenu/CharacterTurnOrder" >
+            <Property Name="Alpha" Value='0' />
+            <Property Name="FrameEnabled" Value="False" />
+            <Property Name="BackgroundEnabled" Value="False" />
+            <Property Name="UnifiedPosition" Value="{{0.1,0},{0.05,0}}" />
+            <Property Name="UnifiedSize" Value="{{0.6,0},{0.1,0}}" />
+        </Window>
+    </Window>
+
+</GUILayout>

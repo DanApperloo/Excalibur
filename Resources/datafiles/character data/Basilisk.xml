@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<Monster name="Basilisk">
+    <job>Fighter</job>
+    <type>Armoured</type>
+    <lvl>2</lvl>
+    <exp>30</exp>
+    <str>12</str>
+    <mag>2</mag>
+    <def>21</def>
+    <evn>4</evn>
+    <acc>10</acc>
+    <maxhp>30</maxhp>
+    <curhp>22</curhp>
+</Monster>
