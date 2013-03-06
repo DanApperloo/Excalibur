@@ -1,7 +1,7 @@
 class Drawable(object):
     """Base Class for any object that is drawn to scene and attached to nodes"""
 
-    def __init__(self, sceneManager, parentNode):
+    def __init__(self, sceneManager, parentNode, name):
         """Creates pointers to the Parent SceneManager and Parent Node
 
         Keyword Arguments:
@@ -11,15 +11,6 @@ class Drawable(object):
         """
         self.sceneManager = sceneManager
         self.parentNode = parentNode
-        self.node = None
-
-    def createNode(self, name):
-        """Create the child node of the parent node
-
-        Keyword Arguments:
-        name -- The unique name of the node
-
-        """
         self.node = self.parentNode.createChildSceneNode(name)
 
     def attachObject(self, attachee):

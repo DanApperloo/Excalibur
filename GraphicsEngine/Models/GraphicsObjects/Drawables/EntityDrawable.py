@@ -3,21 +3,19 @@ from GraphicsEngine.Models.GraphicsObjects.Drawables.Drawable import *
 class EntityDrawable(Drawable):
     """Holds and controls the Graphics for 3d Images"""
 
-    def __init__(self, sceneManager, parentNode):
-        """Base Constructor of Drawable"""
-        Drawable.__init__(self,sceneManager, parentNode)
-        self.entity = None
-
-    def initialize(self, name, resourceName):
-        """Create the block and attach it to a Scene Node
+    def __init__(self, sceneManager, parentNode, name, resourceName):
+        """Base Constructor of Drawable.
+        Create the block and attach it to a Scene Node
 
         Keyword Arguments:
+        sceneManager -- Reference to the OGRE sceneManager
+        parentNode -- The parent node of the entity
         name -- The unique name of the block
         resourceName -- The location/name of the resource to use for the node
 
         """
-        self.entity =  self.sceneManager.createEntity(name + " Entity", resourceName)
-        self.createNode(name)
+        Drawable.__init__(self, sceneManager, parentNode, name)
+        self.entity = self.sceneManager.createEntity(name + " Entity", resourceName)
         self.attachObject(self.entity)
         self.setVisible(False)
 
@@ -25,7 +23,7 @@ class EntityDrawable(Drawable):
         """Implements Base class method"""
         Drawable.setPosition(self, position)
 
-    def isVisble(self):
+    def isVisible(self):
         """Returns if the Entity is visible or not"""
         return self.getNode().getAttachedObject(0).isVisible()
 

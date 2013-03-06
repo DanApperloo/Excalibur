@@ -30,7 +30,3 @@ class GraphicsUtility(object):
     @classmethod
     def getBlockCenterCoord(cls, xpos, ypos, numOfBlocksInX, numOfBlocksInY):
         return {'x':Constant.BLOCK_WIDTH * xpos - numOfBlocksInX, 'y':Constant.BLOCK_WIDTH * ypos - numOfBlocksInY}
-
-    @classmethod
-    def printFunction(cls, e):
-        print "I got Clicked!"

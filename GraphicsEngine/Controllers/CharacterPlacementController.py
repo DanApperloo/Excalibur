@@ -1,4 +1,5 @@
 from GraphicsEngine.Models.GraphicsObjects.Containers.CharacterPlacementModel import CharacterPlacementModel
+from GraphicsEngine.Controllers.TransitionManager import TransitionManager
 
 class CharacterPlacementController(object):
 
@@ -11,6 +12,10 @@ class CharacterPlacementController(object):
             characterPlacement.showPlacementGrid()
         else:
             raise Exception('CharacterPlacementController cannot create the CharacterPlacementModel because a SceneContainer still exists.')
+
+    @classmethod
+    def getTransition(cls, transitionTypeKey):
+        return TransitionManager.getSingleton().createTransitionFromTypeAndSource(transitionTypeKey, CharacterPlacementModel.getSingleton())
 
     @classmethod
     def deleteCharacterPlacement(cls):

@@ -32,11 +32,10 @@ class EntityDrawableTest(AbstractTestClass):
         ogre.ResourceGroupManager.getSingleton().initialiseAllResourceGroups()
         self.sceneManager = self.root.createSceneManager(ogre.ST_GENERIC, "Default SceneManager")
         self.parentNode = self.sceneManager.getRootSceneNode()
-        self.entity = EntityDrawable(self.sceneManager, self.parentNode)
+        self.entity = EntityDrawable(self.sceneManager, self.parentNode, "TestObject", "cube1.mesh")
 
     def test_initialize(self):
         """Test the initialise() function"""
-        self.entity.initialize("TestUnique", "Box.mesh")
         testName = self.entity.getName()
         self.assertTrue(testName == "TestUnique", "Created Drawable does not have root scene node as parent")
         testObject = self.entity.getNode().getAttachedObject(0)
@@ -44,18 +43,18 @@ class EntityDrawableTest(AbstractTestClass):
         
     def test_isVisible(self):
         """Tests if entity is visible or not"""
-        self.entity.initialize("TestObject", "cube1.mesh")
-        testVisible = self.entity.isVisble()
+        testVisible = self.entity.isVisible()
         self.assertTrue(testVisible == True, "IsVisible returns incorrect Value")
 
     def test_setVisible(self):
         """Tests if we can change the state of visible or not"""
-        self.entity.initialize("TestObject", "cube1.mesh")
         self.entity.setVisible(False)
-        testVisible = self.entity.isVisble()
+        testVisible = self.entity.isVisible()
         self.assertTrue(testVisible == False, "setVisible did not change state correctly")
         
     def tearDown(self):
+        self.entity.cleanUp()
+        del self.entity
         del self.sceneManager
         del self.root
 

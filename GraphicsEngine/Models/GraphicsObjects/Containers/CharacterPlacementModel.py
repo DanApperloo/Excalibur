@@ -1,17 +1,15 @@
 # Constants defining the size of each tile orientation
-import ogre.renderer.OGRE as ogre
+from GraphicsEngine.Factories.GraphicsObjects.Groups.GroupFactory import GroupFactory
 import Storage.Constants as Constant
 from Utilities.LoggingUtilities.LoggingUtil import *
 from GraphicsEngine.Models.GraphicsObjects.Containers.BaseSceneContainer import BaseSceneContainer
-from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.ProjectorGroup import ProjectorGroup
-from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.SquareProjector import SquareProjector
-from GraphicsEngine.Models.GraphicsObjects.Entities.MapBlockGroup import MapBlockGroup
-from GraphicsEngine.Models.GraphicsObjects.Drawables.SpriteDrawableGroup import SpriteDrawableGroup
 
 class CharacterPlacementModel(BaseSceneContainer):
     """CombatMap is used to interact with and store information used in the combat map"""
 
     logger = LoggingUtil('CharacterPlacementModel')
+
+    outputMapping = {'CharacterPlacementOut':'placement'}
 
     # Default Constructor----------------------------------------------------------------------------------------------#
     def __init__(self, sceneManagerIn, inputLayout, meshIn, name = "DefaultCharacterPlacementModel"):
@@ -34,6 +32,7 @@ class CharacterPlacementModel(BaseSceneContainer):
         self.projectors = None
         self.mapBlocks = None
         self.sprites = None
+        self.placement = None
         # Save as Singleton
         CharacterPlacementModel.setSingleton(self)
 
@@ -48,11 +47,11 @@ class CharacterPlacementModel(BaseSceneContainer):
     # Generates the base
     def generatePlacementGrid(self):
         # Create the selection projectors
-        self.projectors = ProjectorGroup(self.sceneManager, self.rotationalNode, (len(self.layout[0]), len(self.layout)))
+        self.projectors = GroupFactory.createCombatBlockHighlightingGroup((len(self.layout), len(self.layout[0])), self.name)
         self.projectors.initialize()
 
         # Create the MapBlock Version of the CombatMapModel
-        self.mapBlocks = MapBlockGroup(self.sceneManager, self.rotationalNode, self.layout, [self.mesh], (len(self.layout[0]), len(self.layout)))
+        self.mapBlocks = GroupFactory.createCombatMapBlockGroup(self.layout, (len(self.layout), len(self.layout[0])), self.name)
         self.mapBlocks.initialize()
 
         # Tie the projectors to the map blocks

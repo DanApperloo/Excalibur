@@ -1,7 +1,10 @@
 import ogre.renderer.OGRE as ogre
 import ogre.gui.CEGUI as CEGUI
 import os
-from GraphicsEngine.Views.SubViews.GUI.BasicGUISubView import *
+from GraphicsEngine.Controllers.TransitionManager import TransitionManager
+from GraphicsEngine.Factories.GraphicsObjects.AbstractGraphicsObjectFactory import AbstractGraphicsObjectFactory
+from GraphicsEngine.Models.Flow.TransitionType import TransitionType
+from GraphicsEngine.Views.SubViews.GUI.TestTransitionSubView import *
 from GraphicsEngine.Views.SubViews.GUI.CharacterPlacementMenuSubView import *
 from GraphicsEngine.Views.SubViews.GUI.CombatMapMenuSubView import *
 from GraphicsEngine.Views.SubViews.Scene.BackgroundSubView import *
@@ -50,6 +53,7 @@ class GraphicsEngineMain(object):
         self._chooseRenderEngine()                                      # Choose Render Engine
         self._baseSetup()                                               # Setup OGRE Root
         self._windowSetup()                                             # Setup Game Window
+        self._setUpGraphicsFactories()
         self._initialiseResources()                                     # Initialise Resources
         self._setupCEGUI()                                              # Setup CEGUI system
         self._createCamera('Main Camera', Constant.INITIAL_CAMERA_POSITION, (0, 0, 0))     # Create main Camera and connect to viewpoint
@@ -88,6 +92,9 @@ class GraphicsEngineMain(object):
         self.sceneManager.setAmbientLight(ogre.ColourValue(1, 1, 1))
         # Create the Root Scene Node at (0,0,0) as a starting place for all other objects
         self.rootSceneNode = self.sceneManager.getRootSceneNode()
+
+    def _setUpGraphicsFactories(self):
+        AbstractGraphicsObjectFactory.setSceneManager(self.sceneManager)
 
     # Initialises all game resources-----------------------------------------------------------------------------------#
     def _initialiseResources(self):
@@ -135,7 +142,7 @@ class GraphicsEngineMain(object):
     # Creates the game modes required----------------------------------------------------------------------------------#
     def __createGameModes(self):
         # Constructs and stores all of the possible Game Modes
-        messageGUI = BasicGUISubView('MessageBox', self.GUISheet, 'TestMode', 'TestLayout.layout')
+        messageGUI = TestTransitionSubView('MessageBox', self.GUISheet, 'TestMode')
         combatGUI = CombatMapMenuSubView('CombatMenu', self.GUISheet, 'TestMode')
         characterPlacementGUI = CharacterPlacementMenuSubView('PlacementMenu', self.GUISheet, 'TestMode')
         BasicStorage.putGUIMode('MessageBox', messageGUI)
@@ -149,9 +156,14 @@ class GraphicsEngineMain(object):
         BasicStorage.putSceneMode('Combat', combatScene)
         BasicStorage.putSceneMode('Placement', characterPlacementScene)
 
-        self.gameModeList['IntroMode'] = View("IntroMode", 'Background', 'MessageBox', '')
-        self.gameModeList['CombatMode'] = View("CombatMode", 'Combat', 'CombatMenu', '')
-        self.gameModeList['PlacementMode'] = View("PlacementMode", 'Placement', 'PlacementMenu', '')
+        transitionManager = TransitionManager()
+        transitionManager.registerTransitionType(TransitionType('PlacementMode', 'CombatMode', [('CharacterPlacementOut','CharacterPlacementIn')]))
+        transitionManager.registerTransitionType(TransitionType('CombatMode', 'IntroMode', []))
+        transitionManager.registerTransitionType(TransitionType('IntroMode', 'PlacementMode', []))
+
+        self.gameModeList['IntroMode'] = View("IntroMode", 'Background', 'MessageBox', [('IntroMode','PlacementMode')])
+        self.gameModeList['CombatMode'] = View("CombatMode", 'Combat', 'CombatMenu', [('CombatMode','IntroMode')])
+        self.gameModeList['PlacementMode'] = View("PlacementMode", 'Placement', 'PlacementMenu', [('PlacementMode','CombatMode')])
 
     # Renders the screen-----------------------------------------------------------------------------------------------#
     def render(self):

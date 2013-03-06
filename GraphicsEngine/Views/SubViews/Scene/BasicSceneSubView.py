@@ -12,6 +12,9 @@ class BasicSceneSubView (object):
     def initialize(self):
         pass
 
+    def getTransition(self, transitionTypeKey):
+        pass
+
     # Cleans up all resources used by Basic Scene Mode-----------------------------------------------------------------#
     def cleanUp(self):
         pass

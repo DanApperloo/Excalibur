@@ -14,6 +14,9 @@ class BackgroundSubView(BasicSceneSubView):
     def initialize(self):
         BackgroundController.createBackground((self.modeName, self.GUISheet))
 
+    def getTransition(self, transitionTypeKey):
+        return BackgroundController.getTransition(transitionTypeKey)
+
     # Cleans up any resources used by the mode-------------------------------------------------------------------------#
     def cleanUp(self):
         BackgroundController.deleteBackground()

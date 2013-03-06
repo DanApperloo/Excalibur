@@ -1,4 +1,6 @@
 from GraphicsEngine.Views.SubViews.GUI.BasicGUISubView import BasicGUISubView
+from InputManaging.InputManager import InputManager
+from InputManaging.ControlEvents import ControlEvents
 from Utilities.GraphicsUtilities.GraphicsUtility import GraphicsUtility
 import ogre.gui.CEGUI as CEGUI
 
@@ -12,14 +14,13 @@ class CharacterPlacementMenuSubView(BasicGUISubView):
         BasicGUISubView.__init__(self, mode, guiSheet, schemeFile, CharacterPlacementMenuSubView.GUI_LAYOUT)
 
     def registerHandlers(self):
-    #        self.ui.getChild("Second Demo Window").getChild("Second Demo Window/Button1-Clickable").subscribeEvent(
-    #            CEGUI.PushButton.EventClicked, GraphicsUtility, 'printFunction'
-    #        )
-    #        self.ui.getChild("Second Demo Window").getChild("Second Demo Window/Button2-Clickable").subscribeEvent(
+        self.ui.getChild("BaseCombatMenu/ActionSelection").getChild("BaseCombatMenu/ActionSelection/MoveButton-Clickable").subscribeEvent(
+            CEGUI.PushButton.EventClicked, self, 'transition'
+        )
+        #        self.ui.getChild("Second Demo Window").getChild("Second Demo Window/Button2-Clickable").subscribeEvent(
     #            CEGUI.PushButton.EventClicked, self, 'printFunction'
     #        )
-        pass
 
-    def printFunction(self, e):
-        print "I got Clicked as well!"
+    def transition(self, e):
+        InputManager.getSingleton().setControlEvent(ControlEvents.TRANSITION_FORWARD)
 

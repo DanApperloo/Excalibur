@@ -28,7 +28,7 @@ class Pattern(object):
     def initialize(self, origin, patternIn, boxType, movable):
         self.active = True
         self.position = origin
-        self.shape = patternIn
+        self.shape = copy.deepcopy(patternIn)
         self.blockType = boxType
         self.movable = movable
         for rowIndex in range(len(patternIn)):
@@ -47,22 +47,31 @@ class Pattern(object):
         return copy.deepcopy(self.layer)
 
     def getShape(self):
-        return copy.copy(self.shape)
+        return copy.deepcopy(self.shape)
 
     def getBlockType(self):
-        return self.blockType
+        return copy.deepcopy(self.blockType)
 
     def getPosition(self):
-        return self.position
+        return copy.deepcopy(self.position)
 
     def cleanUp(self):
         self.logger.logDebug("Cleaning resources for Pattern '{0}'".format(self.name))
+        self.name = None
         del self.name
+        self.xDim = None
         del self.xDim
+        self.yDim = None
         del self.yDim
+        self.defaultValue = None
         del self.defaultValue
+        self.layer = None
         del self.layer
+        self.shape = None
         del self.shape
+        self.shape = None
         del self.blockType
+        self.position = None
         del self.position
+        self.movable = None
         del self.movable

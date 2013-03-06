@@ -1,6 +1,5 @@
-import Storage.Constants as Constant
 from Utilities.GraphicsUtilities.GraphicsUtility import GraphicsUtility
-from GraphicsEngine.Models.GraphicsObjects.Drawables.SpriteDrawable import SpriteDrawable
+from GraphicsEngine.Factories.GraphicsObjects.Drawables.SpriteDrawableFactory import SpriteDrawableFactory
 
 class SpriteDrawableGroup(object):
 
@@ -15,13 +14,14 @@ class SpriteDrawableGroup(object):
             for columnIndex in range(self.yDim):
                 self.spriteArray[rowIndex].append(None)
             self.spriteArray.append([])
+        self.spriteArray.pop()
 
     # Creates a sprite at the specified location if one doesnt exist there---------------------------------------------#
     def createSprite(self, name, sprites, xpos, ypos):
         if self.spriteArray[xpos][ypos] is None:
             position = GraphicsUtility.getBlockCenterCoord(xpos, ypos, self.xDim, self.yDim)
-            self.spriteArray[xpos][ypos] = SpriteDrawable(self.sceneManager, self.rotationalNode)
-            self.spriteArray[xpos][ypos].initialize(name, sprites)
+            self.spriteArray[xpos][ypos] = SpriteDrawableFactory.createCombatMapSprite(self, name, sprites)
+            self.spriteArray[xpos][ypos].initialize()
             self.spriteArray[xpos][ypos].setPosition((position['x'], 1, position['y']))
         else:
             raise Exception('Cannot create character in {0!s}:{1!s} because a character already exists there.'.format(xpos, ypos))

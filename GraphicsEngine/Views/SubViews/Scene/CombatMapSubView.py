@@ -13,6 +13,9 @@ class CombatMapSubView(BasicSceneSubView):
     def initialize(self):
         CombatMapController.createCombatMap((self.sceneManager, self.layout, self.meshs))
 
+    def getTransition(self, transitionTypeKey):
+        return CombatMapController.getTransition(transitionTypeKey)
+
     def cleanUp(self):
         CombatMapController.deleteCombatMap()
 

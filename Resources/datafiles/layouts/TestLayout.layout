@@ -1,7 +1,27 @@
 <?xml version="1.0" ?>
 <GUILayout>
 
-    <Window Type="DefaultGUISheet" Name="">
+    <Window Type="DefaultGUISheet" Name="TestLayout">
+        <Window Type="TaharezLook/FrameWindow" Name="TestLayout/ActionSelection">
+            <Window Type="TaharezLook/Button" Name="TestLayout/ActionSelection/Transition-Clickable" >
+                <Property Name="Text" Value="Move" />
+                <Property Name="Clickable" Value="True" />
+                <Property Name="UnifiedPosition" Value="{{0.1,0},{0.35,0}}" />
+                <Property Name="UnifiedSize" Value="{{0.8,0},{0.4,0}}" />
+            </Window>
+
+            <Property Name="AlwaysOnTop" Value="True" />
+            <Property Name="FrameEnabled" Value="True" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="Text" Value="Commands" />
+            <Property Name="UnifiedPosition" Value="{{0.78,0},{0.05,0}}" />
+            <Property Name="UnifiedSize" Value="{{0.2,0},{0.125,0}}" />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="RollUpEnabled" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="DragMovingEnabled" Value="False" />
+        </Window>
+
         <Window Type="TaharezLook/FrameWindow" Name="Demo Window">
             <Window Type="TaharezLook/StaticText" Name="Demo Window/Text" >
                 <Property Name="FrameEnabled" Value="False" />

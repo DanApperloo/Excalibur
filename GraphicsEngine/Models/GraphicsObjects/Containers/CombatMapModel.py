@@ -1,17 +1,17 @@
 # Constants defining the size of each tile orientation
-import ogre.renderer.OGRE as ogre
+from GraphicsEngine.Factories.GraphicsObjects.Groups.GroupFactory import GroupFactory
+from GraphicsEngine.Models.GraphicsObjects.Groups.ProjectorGroup import ProjectorGroup
 from Utilities.LoggingUtilities.LoggingUtil import *
 import Storage.Constants as Constant
 from GraphicsEngine.Models.GraphicsObjects.Containers.BaseSceneContainer import BaseSceneContainer
-from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.ProjectorGroup import ProjectorGroup
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.SquareProjector import SquareProjector
-from GraphicsEngine.Models.GraphicsObjects.Entities.MapBlockGroup import MapBlockGroup
-from GraphicsEngine.Models.GraphicsObjects.Drawables.SpriteDrawableGroup import SpriteDrawableGroup
 
 class CombatMapModel(BaseSceneContainer):
     """CombatMap is used to interact with and store information used in the combat map"""
 
     logger = LoggingUtil('CombatMapModel')
+
+    inputMapping = {'CharacterPlacementIn':'charInitialPlacement'}
 
     # Default Constructor----------------------------------------------------------------------------------------------#
     def __init__(self, sceneManagerIn, inputLayout, meshsIn, name = "DefaultCombatMapModel"):
@@ -34,6 +34,7 @@ class CombatMapModel(BaseSceneContainer):
         self.projectors = None
         self.mapBlocks = None
         self.sprites = None
+        self.charInitialPlacement = None
         # Save as Singleton
         CombatMapModel.setSingleton(self)
 
@@ -49,11 +50,11 @@ class CombatMapModel(BaseSceneContainer):
     def generateMap(self, mapLayout):
         self.logger.logDebug("Generating Combat Map")
         # Create the selection projectors
-        self.projectors = ProjectorGroup(self.sceneManager, self.rotationalNode, (len(self.layout[0]), len(self.layout)), "{0} - ProjectorGroup".format(self.name))
+        self.projectors = GroupFactory.createCombatBlockHighlightingGroup((len(self.layout), len(self.layout[0])), self.name)
         self.projectors.initialize()
 
         # Create the MapBlock Version of the CombatMapModel
-        self.mapBlocks = MapBlockGroup(self.sceneManager, self.rotationalNode, self.layout, self.meshsUsed, (len(self.layout[0]), len(self.layout)), "{0} - MapBlockGroup".format(self.name))
+        self.mapBlocks = GroupFactory.createCombatMapBlockGroup(self.layout, (len(self.layout), len(self.layout[0])), self.name)
         self.mapBlocks.initialize()
 
         # Tie the projectors to the map blocks
@@ -62,7 +63,7 @@ class CombatMapModel(BaseSceneContainer):
     def placeCharacters(self, characterTray):
         self.logger.logDebug("Placing characters")
         # Set up the sprites
-        self.sprites = SpriteDrawableGroup(self.sceneManager, self.rotationalNode, (Constant.MAP_WIDTH, Constant.MAP_HEIGHT))
+        self.sprites = GroupFactory.createCombatSpriteDrawableGroup((len(self.layout[0]), len(self.layout)))
         self.sprites.createSprite("TestUnique", "dog", 8, 7)
         self.sprites.createSprite("TestUnique2", "pikachu", 7, 9)
 
@@ -72,14 +73,12 @@ class CombatMapModel(BaseSceneContainer):
         self.projectors.movePattern(ProjectorGroup.UP)
         self.projectors.movePattern(ProjectorGroup.UP)
         self.projectors.addPattern(Constant.MOVEMENT, SquareProjector.TARGET_BOX)
-        self.projectors.movePattern(ProjectorGroup.UP)
-        self.projectors.movePattern(ProjectorGroup.UP)
+        self.projectors.movePattern(ProjectorGroup.DOWN)
+        self.projectors.movePattern(ProjectorGroup.DOWN)
+        self.projectors.movePattern(ProjectorGroup.DOWN)
         # Create the selection pointer
         self.projectors.createPointer()
         self.projectors.getPointer().showAll()
-
-#    def showEffectPattern(self):
-#        self.projectors.
 
     def showMap(self):
         self.logger.logDebug("Showing CombatMapModel")

@@ -1,6 +1,7 @@
+from GraphicsEngine.Factories.GraphicsObjects.CombatMapLogistics.ProjectorFactory import ProjectorFactory
 from Utilities.LoggingUtilities.LoggingUtil import *
-import Storage.Constants as Constant
 from Utilities.GraphicsUtilities.GraphicsUtility import GraphicsUtility
+import copy as copy
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.Pattern import Pattern
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.SquareProjector import SquareProjector
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.SelectionProjector import SelectionProjector
@@ -51,16 +52,18 @@ class ProjectorGroup(object):
         for rowIndex in range(self.xDim):
             for columnIndex in range(self.yDim):
                 position = GraphicsUtility.getBlockCenterCoord(rowIndex, columnIndex, self.xDim, self.yDim)
-                self.projectorArray[rowIndex].append(SquareProjector(self.sceneManager, self.root, rowIndex, columnIndex, "{0} - SquareProjector X:{1} Y:{2}".format(self.name, rowIndex, columnIndex)))
+                projector = ProjectorFactory.createBlockHighlighter(self, rowIndex, columnIndex, self.name)
+                self.projectorArray[rowIndex].append(projector)
                 self.projectorArray[rowIndex][columnIndex].initialize(position['x'], position['y'])
             self.projectorArray.append([])
+        self.projectorArray.pop()
 
     # Creates a pointer at the specified position----------------------------------------------------------------------#
     def createPointerAtPosition(self, arrayPosition):
         self.logger.logDebug("Creating Pointer at position X:{0} Y:{1}".format(arrayPosition[0], arrayPosition[1]))
         if self.mapBlocks is not None:
             realPosition = GraphicsUtility.getBlockCenterCoord(arrayPosition[0], arrayPosition[1], self.xDim, self.yDim)
-            self.floatingPointer = SelectionProjector(self.sceneManager, self.root, arrayPosition[0], arrayPosition[1], "{0} - SelectionProjector X:{1} Y:{2}".format(self.name, arrayPosition[0], arrayPosition[1]))
+            self.floatingPointer = ProjectorFactory.createPointerAtPosition(arrayPosition[0], arrayPosition[1], self.name)
             self.floatingPointer.initialize(realPosition['x'], realPosition['y'], 'Pointer', self.mapBlocks[arrayPosition[0]][arrayPosition[1]])
             self.pointerPosition = [arrayPosition[0], arrayPosition[1]]
         else:
@@ -150,15 +153,22 @@ class ProjectorGroup(object):
         for row in range(self.xDim):
             for column in range(self.yDim):
                 if layer[row][column] is not SquareProjector.NO_TYPE:
-                    self.workingTypeArray[row][column] = layer[row][column]
+                    self.workingTypeArray[row][column] = copy.deepcopy(layer[row][column])
 
     def removeTopLayerFromWorkingArray(self):
         topLayer = self.patterns[self.patternsTop].getPatternLayer()
-        lowerLayer = self.patterns[self.patternsTop - 1].getPatternLayer()
         for row in range(self.xDim):
             for column in range(self.yDim):
                 if topLayer[row][column] is not SquareProjector.NO_TYPE:
-                    self.workingTypeArray[row][column] = lowerLayer[row][column]
+                    self.workingTypeArray[row][column] = self.recursivelyRollback(self.patternsTop, row,column)
+
+    def recursivelyRollback(self, index, row, column):
+        lowerLayer = self.patterns[index - 1].getPatternLayer()
+        if (index - 1) != 0 and lowerLayer[row][column] is SquareProjector.NO_TYPE:
+            underBlock = self.recursivelyRollback(index - 1, row, column)
+        else:
+            underBlock = lowerLayer[row][column]
+        return copy.deepcopy(underBlock)
 
     def addPattern(self, pattern, boxType, origin = None):
         self.logger.logDebug("Adding pattern to working block array in Projector Group '{0}'".format(self.name))
@@ -180,14 +190,14 @@ class ProjectorGroup(object):
 
     def removePattern(self):
         self.logger.logDebug("Removing pattern from working block array in Projector Group '{0}'".format(self.name))
-        if self.patternsTop is 0:
+        if self.patternsTop == 0:
             self.patterns.pop().cleanUp()
             self.patternsTop = None
             for row in range(self.xDim):
                 for column in range(self.yDim):
                     self.projectorArray[row][column].hide()
             self.refreshPatterns()
-        elif self.patternsTop is not None:
+        elif self.patternsTop > 0:
             self.removeTopLayerFromWorkingArray()
             self.patterns.pop().cleanUp()
             self.patternsTop = self.patternsTop - 1

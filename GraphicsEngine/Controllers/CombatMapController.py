@@ -1,4 +1,5 @@
 from GraphicsEngine.Models.GraphicsObjects.Containers.CombatMapModel import CombatMapModel
+from GraphicsEngine.Controllers.TransitionManager import TransitionManager
 
 class CombatMapController(object):
 
@@ -13,6 +14,10 @@ class CombatMapController(object):
             combatMap.showPattern()
         else:
             raise Exception('CombatMapController cannot create the CombatMapModel because a SceneContainer still exists.')
+
+    @classmethod
+    def getTransition(cls, transitionTypeKey):
+        return TransitionManager.getSingleton().createTransitionFromTypeAndSource(transitionTypeKey, CombatMapModel.getSingleton())
 
     @classmethod
     def deleteCombatMap(cls):

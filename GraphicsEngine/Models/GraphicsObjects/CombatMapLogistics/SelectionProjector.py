@@ -1,6 +1,6 @@
 from Utilities.LoggingUtilities.LoggingUtil import *
 from GraphicsEngine.Models.GraphicsObjects.CombatMapLogistics.SquareProjector import SquareProjector
-from GraphicsEngine.Models.GraphicsObjects.Drawables.SpriteDrawable import SpriteDrawable
+from GraphicsEngine.Factories.GraphicsObjects.Drawables.SpriteDrawableFactory import SpriteDrawableFactory
 
 class SelectionProjector(SquareProjector):
     """Controls the move-able pointer."""
@@ -15,8 +15,7 @@ class SelectionProjector(SquareProjector):
     # Default Constructor----------------------------------------------------------------------------------------------#
     def __init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex, name = "DefaultSelectionProjector"):
         self.logger.logDebug("Constructor called for SelectionProjector: {0}".format(name))
-        self.name = name
-        SquareProjector.__init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex)
+        SquareProjector.__init__(self, sceneManagerIn, rootNode, None, rowIndex, columnIndex, name)
         self.pointer = None
 
     # Initialises the selector at a given position and turns its visibility to false-----------------------------------#
@@ -25,8 +24,8 @@ class SelectionProjector(SquareProjector):
         self.projectionType = self.SELECTOR_TYPE
         self.projectionImage = self.SELECTOR_IMAGE
         self.tieToMapBlock(mapBlock)
-        self.pointer = SpriteDrawable(self.sceneManager, self.mapBlock.getNode())
-        self.pointer.initialize(namePrefix, 'Pointer')
+        self.pointer = SpriteDrawableFactory.createPointerSprite(self.mapBlock.getNode(), namePrefix, 'Pointer')
+        self.pointer.initialize()
         self.pointer.setPosition((0, 5, 0))
         self.pointer.setVisible(False)
 
@@ -65,7 +64,6 @@ class SelectionProjector(SquareProjector):
     # Releases any used resources by the projector---------------------------------------------------------------------#
     def cleanUp(self):
         self.logger.logDebug("Releasing resources for SelectionProjector '{0}'".format(self.name))
-        del self.name
         self.pointer.cleanUp()
         del self.pointer
         SquareProjector.cleanUp(self)

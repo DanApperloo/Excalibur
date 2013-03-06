@@ -1,4 +1,5 @@
 import ogre.io.OIS as OIS
+from InputManaging.ControlEvents import ControlEvents
 from InputManaging.FrameActionCenter import *
 
 # Input Manager Class handles the Input from the screen at the highest level-------------------------------------------#
@@ -20,7 +21,7 @@ class InputManager(object):
 
     # Initialises the OIS input system, ie. Keyboard and Mouse---------------------------------------------------------#
     def _setupInputSystem(self, window):
-        windowHandle = window.getCustomAttributeInt("WINDOW")             # Retrive a pointer to the Game Window
+        windowHandle = window.getCustomAttributeInt("WINDOW")             # Retrieve a pointer to the Game Window
         paramList = [("WINDOW", str(windowHandle))]                       # Setup way for OIS to communicate with Window
         self.inputManager = OIS.createPythonInputSystem(paramList)        # Create OIS Input Manager to allow interaction
         # Now InputManager is initialized for use. Keyboard and Mouse objects must still be initialized separately
@@ -36,6 +37,15 @@ class InputManager(object):
     def _tieInListeners(self, root):
         self.frameListener = FrameActionCenter(self.keyboard, self.mouse)  # Create the main Frame Listener
         root.addFrameListener(self.frameListener)                          # Attach the Listener to the OGRE Root
+
+    def setControlEvent(self, controlEventIn):
+        self.frameListener.setControlEvent(controlEventIn)
+
+    def getControlEvent(self):
+        return self.frameListener.getControlEvent()
+
+    def flushControlEvent(self):
+        self.frameListener.setControlEvent(ControlEvents.NO_EVENT)
 
     # Gets the instance of the class-----------------------------------------------------------------------------------#
     @classmethod

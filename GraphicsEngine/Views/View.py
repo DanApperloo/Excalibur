@@ -1,5 +1,4 @@
 from Storage.BasicStorage import BasicStorage
-from GraphicsEngine.Controllers.ScreenFlowController import ScreenFlowController
 
 # Controls the specifications and reactions for each game mode---------------------------------------------------------#
 class View ( object ):
@@ -17,10 +16,11 @@ class View ( object ):
         self.scene.initialize()
         self.gui.initialize()
         self.gui.registerHandlers()
-        ScreenFlowController.createScreenFlow(self.nextModes)
+
+    def getTransition(self):
+        return self.scene.getTransition(self.nextModes[0])
 
     # Cleans up used resources-----------------------------------------------------------------------------------------#
     def cleanUp(self):
         self.gui.cleanUp()
         self.scene.cleanUp()
-        ScreenFlowController.removeScreenFlow()

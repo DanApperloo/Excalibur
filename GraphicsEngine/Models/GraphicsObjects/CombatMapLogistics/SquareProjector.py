@@ -7,34 +7,38 @@ class SquareProjector(object):
     logger = LoggingUtil('SquareProjector')
 
     # Class Variables--------------------------------------------------------------------------------------------------#
-    NO_TYPE=0
-    MOVE_BOX=1
-    ATTACK_BOX=2
-    TARGET_BOX=3
+    NO_TYPE = 0
+    MOVE_BOX = 1
+    ATTACK_BOX = 2
+    TARGET_BOX = 3
 
-    MOVE_PROJECTION="Blue_Box.png"
-    ATTACK_PROJECTION="Red_Box.png"
-    TARGET_PROJECTION="Yellow_Box.png"
+    MOVE_PROJECTION = "Blue_Box.png"
+    ATTACK_PROJECTION = "Red_Box.png"
+    TARGET_PROJECTION = "Yellow_Box.png"
+
+    GRID_PROJECTION = "Grid.png"
 
     PROJECTOR_NODE_NAME_PREFIX = 'ProjectorNode'
     FILTER_NODE_NAME_PREFIX = 'FilterNode'
-    FILTER="decal_filter.png"
+    FILTER = "decal_filter.png"
     # -----------------------------------------------------------------------------------------------------------------#
 
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManagerIn, rootNode, rowIndex, columnIndex, name = "DefaultSquareProjector"):
+    def __init__(self, sceneManagerIn, rootNode, projectorGroup, rowIndex, columnIndex, name = "DefaultSquareProjector"):
         """Creates the projector object.
 
         Required Parameters:
         sceneManagerIn -
         rootNode -
+        projectorGroup -
         rowIndex -
         columnIndex -
         """
         self.logger.logDebug("Constructor called for SquareProjector: {0}".format(name))
-        self.baseName = name
+        self.name = name
         self.sceneManager = sceneManagerIn
         self.root = rootNode
+        self.projectorGroup = projectorGroup
         self.row = rowIndex
         self.column = columnIndex
         self.visible = False
@@ -64,6 +68,7 @@ class SquareProjector(object):
         # Sets the projector to off as default
         self.visible = False
         self.projectionType = self.NO_TYPE
+        self.projectionImage = self.GRID_PROJECTION
 
         # Creates the frustum projector
         self.projectionFrustum = ogre.Frustum()
@@ -90,6 +95,7 @@ class SquareProjector(object):
     # Ties the projector to a Map Block--------------------------------------------------------------------------------#
     def tieToMapBlock(self, mapBlockIn):
         self.mapBlock = mapBlockIn
+        self.show()
 
     # Frees the projector from its Map Block---------------------------------------------------------------------------#
     def untieMapBlock(self):
@@ -158,7 +164,7 @@ class SquareProjector(object):
 
     # Make the projection visible--------------------------------------------------------------------------------------#
     def show(self):
-        if not self.visible and self.projectionType is not self.NO_TYPE:
+        if not self.visible:
             self.visible = True
             self.makeBlockReceiveProjection()
 
@@ -172,7 +178,7 @@ class SquareProjector(object):
     def setProjectionType(self, projectionType):
         if not self.visible:
             if projectionType == self.NO_TYPE:
-                self.projectionImage = None
+                self.projectionImage = self.GRID_PROJECTION
             elif projectionType == self.MOVE_BOX:
                 self.projectionImage = self.MOVE_PROJECTION
             elif projectionType == self.ATTACK_BOX:
@@ -203,8 +209,8 @@ class SquareProjector(object):
 
     # Releases any used resources--------------------------------------------------------------------------------------#
     def cleanUp(self):
-        self.logger.logDebug("Releasing resources for SquareProjector '{0}'".format(self.baseName))
-        del self.baseName
+        self.logger.logDebug("Releasing resources for SquareProjector '{0}'".format(self.name))
+        del self.name
         self.projectionNode.detachAllObjects()
         self.filterNode.detachAllObjects()
         del self.projectionFrustum
@@ -214,5 +220,8 @@ class SquareProjector(object):
         del self.projectionNode
         del self.filterNode
         self.mapBlock = None
+        del self.mapBlock
+        self.projectorGroup = None
+        del self.projectorGroup
         self.root = None
         self.sceneManager = None

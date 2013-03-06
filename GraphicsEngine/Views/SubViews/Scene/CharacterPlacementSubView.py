@@ -13,6 +13,9 @@ class CharacterPlacementSubView(BasicSceneSubView):
     def initialize(self):
         CharacterPlacementController.createCharacterPlacement((self.sceneManager, self.layout, self.meshs))
 
+    def getTransition(self, transitionTypeKey):
+        return CharacterPlacementController.getTransition(transitionTypeKey)
+
     def cleanUp(self):
         CharacterPlacementController.deleteCharacterPlacement()
 

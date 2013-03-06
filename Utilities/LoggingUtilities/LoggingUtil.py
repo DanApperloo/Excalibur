@@ -8,7 +8,7 @@ import inspect
 class LoggingUtil(object):
     """A Utility to allow easy logging - Initialize with string of Class name"""
 
-    #Class Variables ------------------------------
+    # Class Variables ------------------------------
     logFileName = "GameLog.txt"
     loggerMap = {}
     active = False

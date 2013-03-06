@@ -8,48 +8,51 @@ class MapBlock(EntityDrawable):
     logger = LoggingUtil('MapBlock')
 
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManager, parentNode, meshFile, xpos, ypos, zpos = 0, name = "DefaultMapBlock"):
+    def __init__(self, sceneManager, parentNode, parentMapBlockGroup, meshFile, staticIn, xpos, ypos, zpos, name):
         """Creates an individual map block.
 
         Required Parameters:
         sceneManager - the OGRE Scene Manager
         parentNode - the root node for the parent combat map
+        parentMapBlockGroup - the parent MapBlockGroup
         meshFile - the name of the map block's mesh
         xpos - the designed block layout X position
         ypos - the designed block layout Y position
-        zpos - the designed block layout Z position (default = 0)
+        zpos - the designed block layout Z position
         """
+        EntityDrawable.__init__(self, sceneManager, parentNode, name, meshFile)
         self.logger.logDebug("Constructor called for MapBlock: {0}".format(name))
         self.name = name
+        self.parentMapBlockGroup = parentMapBlockGroup
         # BlockImageSet
-        EntityDrawable.__init__(self, sceneManager, parentNode)
         self.mesh = meshFile
         # Level of Block and initial array position
-        self.staticPosition = (xpos, ypos, zpos)
-        # Stores the edited base materials so that they can be deleted
-        self.workingMaterials = None
-
-    # Initialises the map block----------------------------------------------------------------------------------------#
-    def initialize(self):
-        """Sets up the map block. Clones the used material so that it may be edited."""
-        EntityDrawable.initialize(self, "{0!s}:{1!s} MapBlock".format(self.staticPosition[0], self.staticPosition[1]), self.mesh)
-        self.setPosition((self.staticPosition[0], 0, self.staticPosition[1]))
+        self.realPosition = (xpos, ypos, zpos)
+        self.staticPosition = staticIn
         # Clones all materials to allow projections to appear
         self.workingMaterials = []
+
+    def __cloneMaterials(self):
+        clones = []
         for i in range(self.entity.getNumSubEntities()):
             realMaterial = self.entity.getSubEntity(i).getMaterial()
             newMaterial = realMaterial.clone("{0} {1!s}:{2!s}".format(realMaterial.getName(), self.staticPosition[0], self.staticPosition[1]))
             newMaterial.load()
             self.entity.getSubEntity(i).setMaterial(newMaterial)
             # Stores the new materials so that they can be deleted
-            self.workingMaterials.append(newMaterial)
+            clones.append(newMaterial)
+        return clones
+
+    def initialize(self):
+        self.setPosition((self.realPosition[0], self.realPosition[2], self.realPosition[1]))
+        self.workingMaterials = self.__cloneMaterials()
 
     def show(self):
-        if not self.isVisble():
+        if not self.isVisible():
             self.setVisible(True)
 
     def hide(self):
-        if self.isVisble():
+        if self.isVisible():
             self.setVisible(False)
 
     # Returns the designed position of the map block-------------------------------------------------------------------#
@@ -64,4 +67,6 @@ class MapBlock(EntityDrawable):
             # Remove the material from the manager so that it may be deleted
             ogre.MaterialManager.getSingleton().remove(material)
         del self.workingMaterials
+        self.parentMapBlockGroup = None
+        del self.parentMapBlockGroup
         EntityDrawable.cleanUp(self)

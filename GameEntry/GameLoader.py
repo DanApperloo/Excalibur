@@ -1,6 +1,7 @@
 from GraphicsEngine.Engine.GraphicsEngineMain import *
 from GameEngine.Engine.GameEngineMain import *
 from InputManaging.InputManager import *
+from InputManaging.ControlEvents import ControlEvents
 
 # Controls the flow of the game as well as all of the main utilities---------------------------------------------------#
 class GameLoader(object):
@@ -50,13 +51,23 @@ class GameLoader(object):
         self.graphicsEngine.loadGameMode(Constant.ENTRY_EXIT_MODE)
         while self.graphicsEngine.render():
             self.inputManager.frameListener.capture()
-            if self.inputManager.frameListener.changeModeRequested:
-                self.graphicsEngine.gameModeList[Constant.INDEX_MODE_LIST[self.graphicsEngine.currentMode]].cleanUp()
-                self.graphicsEngine.currentMode = (self.graphicsEngine.currentMode + 1) % 3
-                self.graphicsEngine.loadGameMode(self.graphicsEngine.currentMode)
-                self.inputManager.frameListener.changeModeRequested = False
+            self.resolveControlEvent()
         # Clean up any left over resources
         self.graphicsEngine.gameModeList[Constant.INDEX_MODE_LIST[self.graphicsEngine.currentMode]].cleanUp()  # Cleans up active Game Modes
+
+    def resolveControlEvent(self):
+        if self.inputManager.getControlEvent() == ControlEvents.TRANSITION_FORWARD:
+            TransitionManager.getSingleton().sendTransition(self.graphicsEngine.gameModeList[Constant.INDEX_MODE_LIST[self.graphicsEngine.currentMode]].getTransition())
+            transition = TransitionManager.getSingleton().readTransition()
+            self.graphicsEngine.gameModeList[Constant.INDEX_MODE_LIST[self.graphicsEngine.currentMode]].cleanUp()
+            if transition.destination == 'IntroMode':
+                self.graphicsEngine.currentMode = 0
+            elif transition.destination == 'PlacementMode':
+                self.graphicsEngine.currentMode = 1
+            elif transition.destination == 'CombatMode':
+                self.graphicsEngine.currentMode = 2
+            self.graphicsEngine.loadGameMode(self.graphicsEngine.currentMode)
+            self.inputManager.flushControlEvent()
 
     # Cleans up all resources being used-------------------------------------------------------------------------------#
     def cleanUp(self):

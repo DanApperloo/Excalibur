@@ -25,6 +25,12 @@ class BaseSceneContainer(object):
         else:
             raise Exception("BaseSceneContainer cannot remove Singleton because it doesn't exist.")
 
+    def mapContainerOutput(self):
+        return {'NoOutput':None}
+
+    def mapContainerInput(self):
+        return {'NoInput':None}
+
     @classmethod
     def getSingleton(cls):
         return cls.__singleton

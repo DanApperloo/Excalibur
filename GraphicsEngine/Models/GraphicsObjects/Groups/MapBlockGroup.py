@@ -1,14 +1,13 @@
-import Storage.Constants as Constant
 from Utilities.LoggingUtilities.LoggingUtil import *
 from Utilities.GraphicsUtilities.GraphicsUtility import GraphicsUtility
-from GraphicsEngine.Models.GraphicsObjects.Entities.MapBlock import MapBlock
+from GraphicsEngine.Factories.GraphicsObjects.Entities.MapBlockFactory import MapBlockFactory
 
 class MapBlockGroup(object):
 
     logger = LoggingUtil('MapBlockGroup')
 
     # Default Constructor----------------------------------------------------------------------------------------------#
-    def __init__(self, sceneManagerIn, rootNode, inputLayout, meshsIn, mapDimensions, name = 'DefaultMapBlockGroup'):
+    def __init__(self, sceneManagerIn, rootNode, inputLayout, mapDimensions, name = 'DefaultMapBlockGroup'):
         """Creates the movement square projector class which stores the array of projectors that display the
         movement options.
 
@@ -25,8 +24,6 @@ class MapBlockGroup(object):
         self.xDim = mapDimensions[0]
         self.yDim = mapDimensions[1]
         self.zPos = 0
-        # Create List of all texture files used in map
-        self.meshsUsed = meshsIn
         self.blockArray = [[]]
 
     # Initialises the projector array----------------------------------------------------------------------------------#
@@ -35,9 +32,11 @@ class MapBlockGroup(object):
             for y in range(self.yDim):
                 # Create the map block in this location and initialise
                 position = GraphicsUtility.getBlockCenterCoord(x, y, self.xDim, self.yDim)
-                self.blockArray[x].append(MapBlock(self.sceneManager, self.rotationalNode, self.meshsUsed[y % len(self.meshsUsed)], position['x'], position['y'], self.zPos, "{0} - MapBlock X:{1} Y:{2}".format(self.name, position['x'], position['y'])))
-                self.blockArray[x][y].initialize()
+                block = MapBlockFactory.createCombatMapBlock(self, self.layout[x][y], (x, y, 0), position['x'], position['y'], self.zPos, self.name)
+                block.initialize()
+                self.blockArray[x].append(block)
             self.blockArray.append([])
+        self.blockArray.pop()
 
     def hideAll(self):
         for x in range(self.xDim):
@@ -61,7 +60,6 @@ class MapBlockGroup(object):
             for block in blockRow:
                 block.cleanUp()
         del self.blockArray
-        del self.meshsUsed
         del self.layout
         self.sceneManager = None
         self.rotationalNode = None
